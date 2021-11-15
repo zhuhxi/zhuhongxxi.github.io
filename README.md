@@ -1,37 +1,25 @@
-## Welcome to GitHub Pages
+# actor-critic--Asynchronous advantage actor-critic（A3C）
 
-You can use the [editor on GitHub](https://github.com/zhuhxi/zhuhxi.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+## review policy gradient
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+$\triangledown \approx \frac{1}{N}\sum\limits^N_{n=1}\sum\limits^{T_n}_{t=1}(\sum^{T_n}_{t^{'}=t}\gamma^{t^{'}-t }r^n_{t^{'}}-b)\triangledown\log p_\theta(a^n_t|s^n_t)$ 采取sample的方式导致$G^n_t$非常不稳定，有极大的variance，如何估测G的期望值？
 
-### Markdown
+- state value function $V^\pi(s)$
+- state-action value function $Q^{\pi}(s,a)$
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## advantage actor-critic
 
-```markdown
-Syntax highlighted code block
+$Q^{\pi}(s_t^n,a_t^n)-V^\pi(s_t^n)$，会带来一定的方差，但只用确定一个网络
 
-# Header 1
-## Header 2
-### Header 3
+- ### tips
 
-- Bulleted
-- List
+  - the parameters of actor $\pi(s)$ and critic $V^\pi(s)$可以共享一部分浅层网络参数
+  - use output entropy as regularization for $\pi(s)$
 
-1. Numbered
-2. List
+## asynchronous advantage actor-critic(A3C)
 
-**Bold** and _Italic_ and `Code` text
+鸣人影分身，多个worker进行学习
 
-[Link](url) and ![Image](src)
-```
+## pathwise derivative policy gradient
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/zhuhxi/zhuhxi.github.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+不仅对策略进行打分，并且直接告知应该采取什么行动才是好的
